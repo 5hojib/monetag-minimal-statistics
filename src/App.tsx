@@ -22,7 +22,7 @@ import {
 } from './utils/formatters';
 import { getAllStatistics } from './api/client';
 import { getDayIndex, mergeDayIndex } from './utils/apiCache';
-import { syncBalanceWidget } from './wiring/balanceWidget';
+import { syncBalanceWidget, configureBalanceWidget } from './wiring/balanceWidget';
 
 // How far back the app keeps an up-to-date rolling index without the user
 // explicitly running "Load all data". Anything older than this is preserved
@@ -213,6 +213,17 @@ export default function App() {
       balance: currentBalance,
     });
   }, [todayMoney, yesterdayMoney, currentBalance]);
+
+  // Let the native widget refresh itself in the background: hand it the
+  // reader-only API key and withdrawals so its button can hit the API
+  // directly, without launching the app.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    configureBalanceWidget({
+      apiKey: apiKey,
+      withdrawals: totalWithdrawals,
+    });
+  }, [apiKey, totalWithdrawals]);
 
   // "Load all data" — backfill the entire history into the cache.
   const handleLoadAllData = useCallback(async () => {

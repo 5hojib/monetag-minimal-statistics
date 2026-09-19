@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
 
-import com.monetag.publisher.MainActivity;
 import com.monetag.publisher.R;
 
 import java.text.NumberFormat;
@@ -15,8 +14,9 @@ import java.util.Locale;
 
 /**
  * Home-screen balance widget. Fully transparent, left-aligned today /
- * yesterday / total balance, with a refresh button on the right that opens
- * the app (which re-syncs and then refreshes this widget).
+ * yesterday / total balance, with a refresh button on the right. Tapping
+ * refresh re-fetches statistics from Monetag in the background (no app
+ * launch) using the reader-only API key stored by the web app.
  */
 public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
 
@@ -34,6 +34,26 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
         update(context, appWidgetManager, appWidgetIds);
     }
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if (ACTION_REFRESH.equals(intent.getAction())) {
+            // Keep the broadcast alive while the network fetch runs.
+            final PendingResult pending = goAsync();
+            new Thread(() -> {
+                try {
+                    BalanceData fresh = WidgetFetch.fetch(context);
+                    if (fresh != null) {
+                        BalanceStore.saveCents(context, fresh.today, fresh.yesterday, fresh.balance);
+                        updateAll(context);
+                    }
+                } finally {
+                    pending.finish();
+                }
+            }).start();
+        }
+    }
+
     private static void update(Context context, AppWidgetManager manager, int[] ids) {
         if (ids.length == 0) return;
 
@@ -48,15 +68,12 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
             views.setTextViewText(R.id.widget_balance_value, money.format(data.balance / 100.0));
         }
 
-        Intent open = new Intent(context, MainActivity.class);
-        open.setAction(ACTION_REFRESH);
-        open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pending = PendingIntent.getActivity(
+        Intent refresh = new Intent(context, BalanceWidgetProvider.class);
+        refresh.setAction(ACTION_REFRESH);
+        PendingIntent pending = PendingIntent.getBroadcast(
                 context,
                 0,
-                open,
+                refresh,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.widget_refresh, pending);
 

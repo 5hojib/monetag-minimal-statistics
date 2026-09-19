@@ -11,7 +11,7 @@ Moneboard lets you keep an eye on your Monetag publisher statistics on the go. Y
 - **Home** — current balance with odometer animation, the **Hold / Approved** split (Monetag holds the last 4 days of earnings), lifetime earnings & withdrawals, plus a Today vs. Yesterday typographic hero.
 - **Graph** — a trend chart that **defaults to the last 30 days**, with a Telegram-style scroller below showing the **entire cached history**: **drag to scroll** through it, **pinch to zoom**, or pull the scroller's edges to squeeze the visible range.
 - **Daily** — full daily breakdown table of your cached stats, paginated **14 rows per page** (no date filters — everything is shown).
-- **Home-screen widget** — a transparent Android widget showing **Today**, **Yesterday** and the **Total Balance** with a refresh button; it stays current in the background and refreshes from the last data the app fetched.
+- **Home-screen widget** — a transparent Android widget showing **Today**, **Yesterday** and the **Total Balance**. Its refresh button re-fetches from Monetag **in the background without opening the app** (using your reader-only API key, stored on-device like your other settings), and the totals auto-shrink to fit when you resize the widget small.
 - **Settings** — paste your Monetag API key (stored on-device, not bundled), configure withdrawals, and switch light/dark theme.
 - **Onboarding** — on first open the app asks for your Monetag API key and total withdrawals before showing the dashboard. No bundled API key.
 - **Swipe to navigate** — swipe left/right to move between Home → Daily → Graph → Settings.

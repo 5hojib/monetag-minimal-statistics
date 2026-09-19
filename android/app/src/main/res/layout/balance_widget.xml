@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Transparent balance widget: today / yesterday / total, left-aligned.
-     The total balance is the large figure; a refresh button sits on the right. -->
+     The total balance is the large figure; a refresh button sits on the
+     right. All values auto-shrink so nothing clips when resized small. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="16dp">
+    android:paddingStart="12dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -22,7 +26,6 @@
             android:text="@string/widget_today_label"
             android:textColor="#9CA3AF"
             android:textSize="10sp"
-            android:textStyle="normal"
             android:letterSpacing="0.12" />
 
         <TextView
@@ -31,17 +34,21 @@
             android:layout_height="wrap_content"
             android:text="--"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
             android:textStyle="bold"
             android:typeface="sans"
             android:fontFamily="sans-serif"
-            android:textIsSelectable="false" />
+            android:maxLines="1"
+            android:ellipsize="none"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeStepGranularity="1sp" />
 
         <TextView
             android:id="@+id/widget_yesterday_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="3dp"
             android:text="@string/widget_yesterday_label"
             android:textColor="#9CA3AF"
             android:textSize="10sp"
@@ -53,16 +60,21 @@
             android:layout_height="wrap_content"
             android:text="--"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
             android:textStyle="bold"
             android:typeface="sans"
-            android:fontFamily="sans-serif" />
+            android:fontFamily="sans-serif"
+            android:maxLines="1"
+            android:ellipsize="none"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="11sp"
+            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeStepGranularity="1sp" />
 
         <TextView
             android:id="@+id/widget_balance_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="6dp"
             android:text="@string/widget_total_label"
             android:textColor="#9CA3AF"
             android:textSize="10sp"
@@ -70,7 +82,7 @@
 
         <TextView
             android:id="@+id/widget_balance_value"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="--"
             android:textColor="#FFFFFF"
@@ -78,17 +90,23 @@
             android:textStyle="bold"
             android:typeface="sans"
             android:fontFamily="sans-serif"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:ellipsize="none"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeMaxTextSize="30sp"
+            android:autoSizeStepGranularity="1sp"
+            android:gravity="start|center_vertical" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/widget_refresh"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
         android:src="@drawable/ic_refresh"
         android:background="@null"
         android:scaleType="centerInside"
-        android:padding="10dp"
+        android:padding="9dp"
         android:contentDescription="@string/widget_refresh" />
 </LinearLayout>
