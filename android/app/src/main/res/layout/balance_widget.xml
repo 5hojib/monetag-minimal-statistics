@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Transparent balance widget: today / yesterday / total, left-aligned.
-     The total balance is the large figure; a refresh button sits on the
-     right. All values auto-shrink so nothing clips when resized small. -->
+     The total balance is always visibly larger than the other two (its
+     autosize floor stays above their ceiling). Refresh re-fetches in the
+     background. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,7 +42,7 @@
             android:ellipsize="none"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="11sp"
-            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeMaxTextSize="13sp"
             android:autoSizeStepGranularity="1sp" />
 
         <TextView
@@ -67,7 +68,7 @@
             android:ellipsize="none"
             android:autoSizeTextType="uniform"
             android:autoSizeMinTextSize="11sp"
-            android:autoSizeMaxTextSize="14sp"
+            android:autoSizeMaxTextSize="13sp"
             android:autoSizeStepGranularity="1sp" />
 
         <TextView
@@ -86,15 +87,15 @@
             android:layout_height="wrap_content"
             android:text="--"
             android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:textSize="32sp"
             android:textStyle="bold"
             android:typeface="sans"
             android:fontFamily="sans-serif"
             android:maxLines="1"
             android:ellipsize="none"
             android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeMaxTextSize="30sp"
+            android:autoSizeMinTextSize="18sp"
+            android:autoSizeMaxTextSize="32sp"
             android:autoSizeStepGranularity="1sp"
             android:gravity="start|center_vertical" />
     </LinearLayout>
