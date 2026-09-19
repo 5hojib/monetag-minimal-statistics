@@ -57,14 +57,15 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
                 new ComponentName(context, BalanceWidgetProvider.class));
         if (ids.length == 0) return;
         BalanceData data = BalanceStore.load(context);
-        render(context, manager, ids, data.today, data.yesterday, data.balance);
+        render(context, manager, ids,
+                moneyText(data.today), moneyText(data.yesterday), data.balance);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         BalanceData data = BalanceStore.load(context);
         render(context, appWidgetManager, appWidgetIds,
-                data.today, data.yesterday, data.balance);
+                moneyText(data.today), moneyText(data.yesterday), data.balance);
     }
 
     @Override
