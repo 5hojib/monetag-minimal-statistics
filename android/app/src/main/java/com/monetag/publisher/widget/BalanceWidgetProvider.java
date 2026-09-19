@@ -16,39 +16,39 @@ import java.util.Locale;
  * Home-screen balance widget. Transparent, left-aligned today / yesterday /
  * total balance with a refresh bolt on the right. Tapping it re-fetches
  * statistics from Monetag in the background (no app launch) using the
- * reader-only API key stored by the web app, then the values roll up with an
- * odometer animation: each value is a ViewFlipper carrying roll frames, and
- * flipping between them plays the XML slide animations. It stays animated
- * even when the fetched figures are unchanged (the roll always starts below).
+ * reader-only API key stored by the web app, then the total balance rolls up
+ * like a mechanical odometer: the total is rendered as a row of 11 digit
+ * wheels (one {@code ViewFlipper} per column), and each frame hops the
+ * displayed slot up to the next digit, so columns notch one-by-one from the
+ * right while the today / yesterday figures settle instantly. Frames always
+ * start below the target, so every refresh rolls even when the figures did
+ * not actually change.
  */
 public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
 
     public static final String ACTION_REFRESH = "com.monetag.publisher.widget.REFRESH";
 
-    // Roll frames per value (ViewFlipper children) and the pause per hop.
-    private static final int ROLL_STEPS = 5;
-    private static final long ROLL_HOP_MS = 160;
+    // Roll frames for the odometer and the pause per hop.
+    private static final int ROLL_FRAMES = 12;
+    private static final long ROLL_FRAME_MS = 70;
 
-    private static final int[] TODAY_VALUE_IDS = {
-            R.id.widget_today_value_0,
-            R.id.widget_today_value_1,
-            R.id.widget_today_value_2,
-            R.id.widget_today_value_3,
-            R.id.widget_today_value_4,
-    };
-    private static final int[] YESTERDAY_VALUE_IDS = {
-            R.id.widget_yesterday_value_0,
-            R.id.widget_yesterday_value_1,
-            R.id.widget_yesterday_value_2,
-            R.id.widget_yesterday_value_3,
-            R.id.widget_yesterday_value_4,
-    };
-    private static final int[] BALANCE_VALUE_IDS = {
-            R.id.widget_balance_value_0,
-            R.id.widget_balance_value_1,
-            R.id.widget_balance_value_2,
-            R.id.widget_balance_value_3,
-            R.id.widget_balance_value_4,
+    // Digit-wheel alphabet (must match the children of each total_wheel)
+    // and the number of right-aligned columns in the widget.
+    private static final String WHEEL_CHARS = "0123456789$,-. ";
+    private static final int TOTAL_COLS = 11;
+
+    private static final int[] TOTAL_WHEEL_IDS = {
+            R.id.total_wheel_0,
+            R.id.total_wheel_1,
+            R.id.total_wheel_2,
+            R.id.total_wheel_3,
+            R.id.total_wheel_4,
+            R.id.total_wheel_5,
+            R.id.total_wheel_6,
+            R.id.total_wheel_7,
+            R.id.total_wheel_8,
+            R.id.total_wheel_9,
+            R.id.total_wheel_10,
     };
 
     public static void updateAll(Context context) {
@@ -57,14 +57,14 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
                 new ComponentName(context, BalanceWidgetProvider.class));
         if (ids.length == 0) return;
         BalanceData data = BalanceStore.load(context);
-        render(context, manager, ids, data.today, data.yesterday, data.balance, ROLL_STEPS - 1);
+        render(context, manager, ids, data.today, data.yesterday, data.balance);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         BalanceData data = BalanceStore.load(context);
         render(context, appWidgetManager, appWidgetIds,
-                data.today, data.yesterday, data.balance, ROLL_STEPS - 1);
+                data.today, data.yesterday, data.balance);
     }
 
     @Override
@@ -98,16 +98,16 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
                 new ComponentName(context, BalanceWidgetProvider.class));
         if (ids.length == 0) return;
 
-        long[] todayFrames = rollFrames(today);
-        long[] yesterdayFrames = rollFrames(yesterday);
-        long[] balanceFrames = rollFrames(balance);
+        String todayText = moneyText(today);
+        String yesterdayText = moneyText(yesterday);
+        long[] frames = rollFrames(balance);
 
         new Thread(() -> {
             try {
-                for (int step = 0; step < ROLL_STEPS; step++) {
+                for (int step = 0; step < ROLL_FRAMES; step++) {
                     render(context, manager, ids,
-                            todayFrames[step], yesterdayFrames[step], balanceFrames[step], step);
-                    if (step < ROLL_STEPS - 1) Thread.sleep(ROLL_HOP_MS);
+                            todayText, yesterdayText, frames[step]);
+                    if (step < ROLL_FRAMES - 1) Thread.sleep(ROLL_FRAME_MS);
                 }
             } catch (InterruptedException ignored) {
             }
@@ -117,9 +117,9 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
     /** Eased frames from a 50% base up to the target value. */
     private static long[] rollFrames(long target) {
         long base = Math.max(0, Math.round(target * 0.5));
-        long[] frames = new long[ROLL_STEPS];
-        for (int i = 0; i < ROLL_STEPS; i++) {
-            double t = i / (double) (ROLL_STEPS - 1);
+        long[] frames = new long[ROLL_FRAMES];
+        for (int i = 0; i < ROLL_FRAMES; i++) {
+            double t = i / (double) (ROLL_FRAMES - 1);
             double eased = 1 - Math.pow(1 - t, 3);
             frames[i] = base + Math.round((target - base) * eased);
         }
@@ -127,12 +127,12 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
     }
 
     private static void render(Context context, AppWidgetManager manager, int[] ids,
-                               long todayCents, long yesterdayCents, long balanceCents, int step) {
+                               String todayText, String yesterdayText, long balanceCents) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.balance_widget);
 
-        setValueChildren(views, TODAY_VALUE_IDS, R.id.roll_today, todayCents, step);
-        setValueChildren(views, YESTERDAY_VALUE_IDS, R.id.roll_yesterday, yesterdayCents, step);
-        setValueChildren(views, BALANCE_VALUE_IDS, R.id.roll_balance, balanceCents, step);
+        views.setTextViewText(R.id.widget_today_value, todayText);
+        views.setTextViewText(R.id.widget_yesterday_value, yesterdayText);
+        setBalanceWheels(views, balanceCents);
 
         Intent refresh = new Intent(context, BalanceWidgetProvider.class);
         refresh.setAction(ACTION_REFRESH);
@@ -148,12 +148,20 @@ public class BalanceWidgetProvider extends android.appwidget.AppWidgetProvider {
         }
     }
 
-    private static void setValueChildren(RemoteViews views, int[] childIds, int flipperId,
-                                         long cents, int step) {
-        NumberFormat money = NumberFormat.getCurrencyInstance(Locale.US);
-        for (int childId : childIds) {
-            views.setTextViewText(childId, money.format(cents / 100.0));
+    /** Maps the formatted balance, right-aligned, onto the 11 digit wheels. */
+    private static void setBalanceWheels(RemoteViews views, long balanceCents) {
+        String s = moneyText(balanceCents);
+        int start = Math.max(0, s.length() - TOTAL_COLS);
+        for (int c = 0; c < TOTAL_COLS; c++) {
+            char ch = start + c < s.length() ? s.charAt(start + c) : ' ';
+            int index = WHEEL_CHARS.indexOf(ch);
+            if (index < 0) index = WHEEL_CHARS.indexOf(' ');
+            views.setDisplayedChild(TOTAL_WHEEL_IDS[c], index);
         }
-        views.setDisplayedChild(flipperId, step);
+    }
+
+    private static String moneyText(long cents) {
+        NumberFormat money = NumberFormat.getCurrencyInstance(Locale.US);
+        return money.format(cents / 100.0);
     }
 }

@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Odometer roll-in: new frame slides up and fades in (AppWidgets play
-     these XML animations on every ViewFlipper child switch). -->
+<!-- Mechanical odometer notch-in: the next digit slides up into the window. -->
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:anim/decelerate_interpolator">
     <translate
         android:fromYDelta="100%"
         android:toYDelta="0%"
-        android:duration="190" />
-    <alpha
-        android:fromAlpha="0.0"
-        android:toAlpha="1.0"
-        android:duration="190" />
+        android:duration="130" />
 </set>
