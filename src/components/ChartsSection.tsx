@@ -87,6 +87,10 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
     setWindow(w);
   }, []);
 
+  // True while any pointer is down on the chart/scroller/edges. When false,
+  // the window overlay glides between positions with a CSS transition.
+  const [dragging, setDragging] = useState(false);
+
   useEffect(() => {
     setWindow(prev => {
       if (count <= 0) return { start: 0, end: 0 };
@@ -122,6 +126,7 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
 
   const handleEdgeDown = (edge: 'left' | 'right') => (e: ReactPointerEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    setDragging(true);
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {
@@ -145,6 +150,7 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
 
   const handleEdgeUp = () => {
     edgeRef.current = null;
+    setDragging(false);
   };
 
   const handleReset = () => {
@@ -314,14 +320,7 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
   const toLabel = chartData[toIdx]?.displayDate ?? '';
   const windowLeft = `${(window.start / count) * 100}%`;
   const windowWidth = `${((window.end - window.start) / count) * 100}%`;
-
-  const scrollerProps = {
-    ref: scroller.containerRef,
-    onPointerDown: scroller.onPointerDown,
-    onPointerMove: scroller.onPointerMove,
-    onPointerUp: scroller.onPointerUp,
-    onPointerCancel: scroller.onPointerCancel,
-  };
+  const overlayTransition = dragging ? 'none' : 'left 200ms cubic-bezier(0.22, 1, 0.36, 1), width 200ms cubic-bezier(0.22, 1, 0.36, 1)';
 
   return (
     <div
@@ -374,10 +373,10 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
       {/* Main chart — pan (drag) and pinch-zoom directly on it */}
       <div
         ref={main.containerRef}
-        onPointerDown={main.onPointerDown}
+        onPointerDown={(e) => { setDragging(true); main.onPointerDown(e); }}
         onPointerMove={main.onPointerMove}
-        onPointerUp={main.onPointerUp}
-        onPointerCancel={main.onPointerCancel}
+        onPointerUp={(e) => { setDragging(false); main.onPointerUp(e); }}
+        onPointerCancel={(e) => { setDragging(false); main.onPointerCancel(e); }}
         onTouchStart={swallowTouch}
         onTouchMove={swallowTouch}
         onTouchEnd={swallowTouch}
@@ -391,7 +390,11 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
 
       {/* Scroller — mini overview of the whole history with a draggable/squeezable window */}
       <div
-        {...scrollerProps}
+        ref={scroller.containerRef}
+        onPointerDown={(e) => { setDragging(true); scroller.onPointerDown(e); }}
+        onPointerMove={scroller.onPointerMove}
+        onPointerUp={(e) => { setDragging(false); scroller.onPointerUp(e); }}
+        onPointerCancel={(e) => { setDragging(false); scroller.onPointerCancel(e); }}
         onTouchStart={swallowTouch}
         onTouchMove={swallowTouch}
         onTouchEnd={swallowTouch}
@@ -415,7 +418,7 @@ export default function ChartsSection({ stats }: ChartsSectionProps) {
         {/* Window overlay */}
         <div
           className="absolute top-0 bottom-0 border-y-2 border-slate-400 dark:border-neutral-400 bg-slate-900/[0.07] dark:bg-white/[0.07]"
-          style={{ left: windowLeft, width: windowWidth }}
+          style={{ left: windowLeft, width: windowWidth, transition: overlayTransition }}
         >
           {/* Left squeeze handle */}
           <div

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { useTouchSwipe } from './hooks/useTouchSwipe';
 import { AnimatePresence, motion } from 'motion/react';
 import Header from './components/Header';
@@ -21,6 +22,7 @@ import {
 } from './utils/formatters';
 import { getAllStatistics } from './api/client';
 import { getDayIndex, mergeDayIndex } from './utils/apiCache';
+import { syncBalanceWidget } from './wiring/balanceWidget';
 
 // How far back the app keeps an up-to-date rolling index without the user
 // explicitly running "Load all data". Anything older than this is preserved
@@ -200,6 +202,17 @@ export default function App() {
   }, [dayIndex]);
 
   const approvedBalance = Math.max(0, currentBalance - heldBalance);
+
+  // Keep the Android home-screen balance widget in sync with the latest
+  // figures whenever the cached data or withdrawals change.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    syncBalanceWidget({
+      today: todayMoney,
+      yesterday: yesterdayMoney,
+      balance: currentBalance,
+    });
+  }, [todayMoney, yesterdayMoney, currentBalance]);
 
   // "Load all data" — backfill the entire history into the cache.
   const handleLoadAllData = useCallback(async () => {

@@ -4,4 +4,9 @@
     <string name="title_activity_main">Moneboard</string>
     <string name="package_name">com.monetag.publisher</string>
     <string name="custom_url_scheme">com.monetag.publisher</string>
+    <string name="widget_balance_description">Today, yesterday and total balance</string>
+    <string name="widget_refresh">Refresh</string>
+    <string name="widget_today_label">TODAY</string>
+    <string name="widget_yesterday_label">YESTERDAY</string>
+    <string name="widget_total_label">TOTAL BALANCE</string>
 </resources>

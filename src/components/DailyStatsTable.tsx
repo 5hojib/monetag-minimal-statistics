@@ -18,7 +18,7 @@ export default function DailyStatsTable({ stats }: DailyStatsTableProps) {
   const [sortField, setSortField] = useState<SortField>('date_time');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 14;
 
   // Process rows
   const processedRows = useMemo(() => {
