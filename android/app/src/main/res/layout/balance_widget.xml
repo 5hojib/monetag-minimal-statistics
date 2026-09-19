@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Transparent balance widget: today / yesterday / total, left-aligned.
-     The total balance is always visibly larger than the other two (its
-     autosize floor stays above their ceiling). Refresh re-fetches in the
-     background. -->
+     Each value is a ViewFlipper carrying 5 roll frames; flipping between
+     them (setDisplayedChild) plays the XML slide-up animations, producing
+     an odometer roll on every refresh. The total stays clearly larger than
+     the two daily figures at any size. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -29,21 +30,93 @@
             android:textSize="10sp"
             android:letterSpacing="0.12" />
 
-        <TextView
-            android:id="@+id/widget_today_value"
+        <ViewFlipper
+            android:id="@+id/roll_today"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:typeface="sans"
-            android:fontFamily="sans-serif"
-            android:maxLines="1"
-            android:ellipsize="none"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="11sp"
-            android:autoSizeMaxTextSize="13sp"
-            android:autoSizeStepGranularity="1sp" />
+            android:inAnimation="@anim/widget_roll_in"
+            android:outAnimation="@anim/widget_roll_out">
+
+            <TextView
+                android:id="@+id/widget_today_value_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_today_value_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_today_value_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_today_value_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_today_value_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+        </ViewFlipper>
 
         <TextView
             android:id="@+id/widget_yesterday_label"
@@ -55,21 +128,93 @@
             android:textSize="10sp"
             android:letterSpacing="0.12" />
 
-        <TextView
-            android:id="@+id/widget_yesterday_value"
+        <ViewFlipper
+            android:id="@+id/roll_yesterday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:typeface="sans"
-            android:fontFamily="sans-serif"
-            android:maxLines="1"
-            android:ellipsize="none"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="11sp"
-            android:autoSizeMaxTextSize="13sp"
-            android:autoSizeStepGranularity="1sp" />
+            android:inAnimation="@anim/widget_roll_in"
+            android:outAnimation="@anim/widget_roll_out">
+
+            <TextView
+                android:id="@+id/widget_yesterday_value_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_yesterday_value_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_yesterday_value_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_yesterday_value_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/widget_yesterday_value_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="11sp"
+                android:autoSizeMaxTextSize="13sp"
+                android:autoSizeStepGranularity="1sp" />
+        </ViewFlipper>
 
         <TextView
             android:id="@+id/widget_balance_label"
@@ -81,23 +226,103 @@
             android:textSize="10sp"
             android:letterSpacing="0.12" />
 
-        <TextView
-            android:id="@+id/widget_balance_value"
+        <ViewFlipper
+            android:id="@+id/roll_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="--"
-            android:textColor="#FFFFFF"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:typeface="sans"
-            android:fontFamily="sans-serif"
-            android:maxLines="1"
-            android:ellipsize="none"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="18sp"
-            android:autoSizeMaxTextSize="32sp"
-            android:autoSizeStepGranularity="1sp"
-            android:gravity="start|center_vertical" />
+            android:inAnimation="@anim/widget_roll_in"
+            android:outAnimation="@anim/widget_roll_out">
+
+            <TextView
+                android:id="@+id/widget_balance_value_0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="18sp"
+                android:autoSizeMaxTextSize="32sp"
+                android:autoSizeStepGranularity="1sp"
+                android:gravity="start|center_vertical" />
+
+            <TextView
+                android:id="@+id/widget_balance_value_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="18sp"
+                android:autoSizeMaxTextSize="32sp"
+                android:autoSizeStepGranularity="1sp"
+                android:gravity="start|center_vertical" />
+
+            <TextView
+                android:id="@+id/widget_balance_value_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="18sp"
+                android:autoSizeMaxTextSize="32sp"
+                android:autoSizeStepGranularity="1sp"
+                android:gravity="start|center_vertical" />
+
+            <TextView
+                android:id="@+id/widget_balance_value_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="18sp"
+                android:autoSizeMaxTextSize="32sp"
+                android:autoSizeStepGranularity="1sp"
+                android:gravity="start|center_vertical" />
+
+            <TextView
+                android:id="@+id/widget_balance_value_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#FFFFFF"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:typeface="sans"
+                android:fontFamily="sans-serif"
+                android:maxLines="1"
+                android:ellipsize="none"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="18sp"
+                android:autoSizeMaxTextSize="32sp"
+                android:autoSizeStepGranularity="1sp"
+                android:gravity="start|center_vertical" />
+        </ViewFlipper>
     </LinearLayout>
 
     <ImageButton
